@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Form</title>
+</head>
+<body>
+  <h2>Contact Us</h2>
+
+  <form id="contactForm">
+    <input type="text" name="user_name" placeholder="Your Name" required /><br><br>
+    <input type="email" name="user_email" placeholder="Your Email" required /><br><br>
+    <textarea name="message" placeholder="Your Message" required></textarea><br><br>
+    <button type="submit">Send</button>
+  </form>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.emailjs.com/sdk/3.2.0/email.min.js"></script>
+  <script>
+    (function () {
+      emailjs.init("yzqMdZYzZXl3PeML3"); // Your Public/User ID
+    })();
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      emailjs.sendForm("service_3f1cz1u", "template_073c34c", this)
+        .then(function () {
+          alert("Message sent successfully! 🎉");
+          document.getElementById("contactForm").reset();
+        }, function (error) {
+          alert("Failed to send message. ❌\n" + JSON.stringify(error));
+        });
+    });
+  </script>
+</body>
+</html>
