@@ -5,85 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact Form</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      line-height: 1.6;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      color: #333;
-    }
-    
-    h2 {
-      color: #2c3e50;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    
-    .form-group {
-      margin-bottom: 15px;
-    }
-    
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    
-    textarea {
-      height: 150px;
-      resize: vertical;
-    }
-    
-    button {
-      background: #3498db;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      width: 100%;
-      transition: background 0.3s;
-    }
-    
-    button:hover {
-      background: #2980b9;
-    }
-    
-    button:disabled {
-      background: #95a5a6;
-      cursor: not-allowed;
-    }
-    
-    #formFeedback {
-      display: none;
-      margin: 20px 0;
-      padding: 15px;
-      border-radius: 4px;
-    }
-    
-    .success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    
-    .error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    
-    .privacy-note {
-      font-size: 14px;
-      color: #7f8c8d;
-      margin-bottom: 20px;
-      text-align: center;
-    }
+    /* Your existing CSS */
   </style>
 </head>
 <body>
@@ -112,40 +34,57 @@
   <script src="https://cdn.emailjs.com/sdk/3.2.0/email.min.js"></script>
 
   <script>
-    // Initialize EmailJS with your public key
+    // Initialize EmailJS only when the SDK is fully loaded
+    function initializeEmailJS() {
+      if (typeof emailjs !== 'undefined') {
+        emailjs.init("2CSNwNU19oWhiyKSa"); // New Public/User ID
+        console.log("EmailJS initialized successfully.");
+      } else {
+        console.error("EmailJS SDK did not load properly.");
+      }
+    }
+
+    // Ensure that the script is loaded before we initialize it
     window.onload = function () {
-      emailjs.init("yzqMdZYzZXl3PeML3"); // Your Public/User ID
+      // Check if the script loaded correctly
+      if (typeof emailjs === 'undefined') {
+        console.error("EmailJS is not available. Please check if the SDK loaded correctly.");
+        return;
+      }
+
+      // Initialize EmailJS
+      initializeEmailJS();
+      
+      // Handle form submission after initialization
+      document.getElementById("contactForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // Show loading feedback
+        document.getElementById("formFeedback").style.display = "block";
+        document.getElementById("formFeedback").textContent = "Sending...";
+
+        // Send the form data to EmailJS
+        emailjs.sendForm('service_3f1cz1u', 'template_073c34c', this)
+          .then(function(response) {
+            // Show success message
+            console.log('SUCCESS', response);
+            document.getElementById("formFeedback").style.display = "block";
+            document.getElementById("formFeedback").textContent = "Message sent successfully! 🎉";
+            document.getElementById("formFeedback").classList.add("success");
+            document.getElementById("formFeedback").classList.remove("error");
+
+            // Reset the form
+            document.getElementById("contactForm").reset();
+          }, function(error) {
+            // Show error message
+            console.log('FAILED', error);
+            document.getElementById("formFeedback").style.display = "block";
+            document.getElementById("formFeedback").textContent = "Failed to send message. ❌";
+            document.getElementById("formFeedback").classList.add("error");
+            document.getElementById("formFeedback").classList.remove("success");
+          });
+      });
     };
-
-    // Handle form submission
-    document.getElementById("contactForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      // Display loading feedback to the user
-      document.getElementById("formFeedback").style.display = "block";
-      document.getElementById("formFeedback").textContent = "Sending...";
-
-      // Send the form data to EmailJS
-      emailjs.sendForm("service_3f1cz1u", "template_073c34c", this)
-        .then(function(response) {
-          // Show success message
-          console.log("SUCCESS", response);
-          document.getElementById("formFeedback").style.display = "block";
-          document.getElementById("formFeedback").textContent = "Message sent successfully! 🎉";
-          document.getElementById("formFeedback").classList.add("success");
-          document.getElementById("formFeedback").classList.remove("error");
-
-          // Reset the form
-          document.getElementById("contactForm").reset();
-        }, function(error) {
-          // Show error message
-          console.error("FAILED", error);
-          document.getElementById("formFeedback").style.display = "block";
-          document.getElementById("formFeedback").textContent = "Failed to send message. ❌";
-          document.getElementById("formFeedback").classList.add("error");
-          document.getElementById("formFeedback").classList.remove("success");
-        });
-    });
   </script>
 </body>
 </html>
