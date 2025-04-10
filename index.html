@@ -112,19 +112,38 @@
   <script src="https://cdn.emailjs.com/sdk/3.2.0/email.min.js"></script>
 
   <script>
-    (function () {
+    // Initialize EmailJS with your public key
+    window.onload = function () {
       emailjs.init("yzqMdZYzZXl3PeML3"); // Your Public/User ID
-    })();
+    };
 
+    // Handle form submission
     document.getElementById("contactForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
+      // Display loading feedback to the user
+      document.getElementById("formFeedback").style.display = "block";
+      document.getElementById("formFeedback").textContent = "Sending...";
+
+      // Send the form data to EmailJS
       emailjs.sendForm("service_3f1cz1u", "template_073c34c", this)
-        .then(function () {
-          alert("Message sent successfully! 🎉");
+        .then(function(response) {
+          // Show success message
+          console.log("SUCCESS", response);
+          document.getElementById("formFeedback").style.display = "block";
+          document.getElementById("formFeedback").textContent = "Message sent successfully! 🎉";
+          document.getElementById("formFeedback").classList.add("success");
+          document.getElementById("formFeedback").classList.remove("error");
+
+          // Reset the form
           document.getElementById("contactForm").reset();
-        }, function (error) {
-          alert("Failed to send message. ❌\n" + JSON.stringify(error));
+        }, function(error) {
+          // Show error message
+          console.error("FAILED", error);
+          document.getElementById("formFeedback").style.display = "block";
+          document.getElementById("formFeedback").textContent = "Failed to send message. ❌";
+          document.getElementById("formFeedback").classList.add("error");
+          document.getElementById("formFeedback").classList.remove("success");
         });
     });
   </script>
